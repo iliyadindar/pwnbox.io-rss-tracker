@@ -1,4 +1,4 @@
-I'll build a clean Telegram bot that polls the pwnbox.io RSS feed and notifies subscribers about new challenges. 
+I build a clean Telegram bot that polls the pwnbox.io RSS feed and notifies subscribers about new challenges. 
 
 - [bot.py](bot.py) — single-file bot (~250 lines)
 - [requirements.txt](requirements.txt) — `pyTelegramBotAPI` + `feedparser`
