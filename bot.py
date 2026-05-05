@@ -199,13 +199,16 @@ def check_feed(*, notify: bool) -> int:
     if not new_entries:
         return 0
 
-    state.mark_seen([entry_key(e) for e in new_entries])
     log.info("Found %d new entries", len(new_entries))
 
     if notify and state.subscribers:
         # RSS lists newest first; reverse so the chat scroll stays chronological.
         for entry in reversed(new_entries):
             broadcast(render_challenge(entry))
+        state.mark_seen([entry_key(e) for e in new_entries])
+    elif not notify:
+        # Silent priming run (first-run): mark seen without notifying.
+        state.mark_seen([entry_key(e) for e in new_entries])
     return len(new_entries)
 
 
@@ -319,7 +322,9 @@ def main() -> None:
 
     # First run: mark everything currently in the feed as seen, so we don't
     # spam users with the entire backlog the moment they /start.
-    if not state.seen_ids:
+    # Only silence when there are no subscribers yet; if subscribers exist but
+    # seen_ids is empty (state loss/reset), notify them normally instead.
+    if not state.seen_ids and not state.subscribers:
         log.info("First run: priming seen-set without notifications")
         check_feed(notify=False)
 
