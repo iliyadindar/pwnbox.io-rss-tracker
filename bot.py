@@ -205,10 +205,8 @@ def check_feed(*, notify: bool) -> int:
         # RSS lists newest first; reverse so the chat scroll stays chronological.
         for entry in reversed(new_entries):
             broadcast(render_challenge(entry))
-        state.mark_seen([entry_key(e) for e in new_entries])
-    elif not notify:
-        # Silent priming run (first-run): mark seen without notifying.
-        state.mark_seen([entry_key(e) for e in new_entries])
+
+    state.mark_seen([entry_key(e) for e in new_entries])
     return len(new_entries)
 
 
